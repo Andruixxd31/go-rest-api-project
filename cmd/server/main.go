@@ -3,11 +3,11 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/andruixxd31/go-rest-api/internal/comment"
 	"github.com/andruixxd31/go-rest-api/internal/db"
+    transportHttp "github.com/andruixxd31/go-rest-api/internal/transport/http"
 )
 
 // Responsible for instantiation and startup of application
@@ -29,20 +29,10 @@ func Run() error {
 
     commentService := comment.NewService(db)
 
-    commentService.CreateComment(
-        context.Background(),
-        comment.Comment{
-            ID: "2044a745-255d-4b45-8abb-e475c44837a0",
-            Slug: "manual-test",
-            Author: "andruixxd31",
-            Body: "Hello world",
-        },
-        )
-
-    fmt.Println(commentService.GetComment(
-        context.Background(),
-        "42120cc6-1a44-4b00-b0a5-737b94444283",
-        ))
+    httpHandler := transportHttp.NewHandler(commentService)
+    if err := httpHandler.Serve(); err != nil {
+        return err
+    }
     return nil
 }
 
