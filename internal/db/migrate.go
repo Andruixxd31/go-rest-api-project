@@ -1,12 +1,13 @@
 package db
 
 import (
+	"errors"
 	"fmt"
 
-    "github.com/golang-migrate/migrate/v4"
-    "github.com/golang-migrate/migrate/v4/database/postgres"
-    _ "github.com/golang-migrate/migrate/v4/source/file"
-    _ "github.com/lib/pq"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/lib/pq"
 )
 
 func (db *DB) MigrateDB() error {
@@ -27,7 +28,9 @@ func (db *DB) MigrateDB() error {
         return err
     }
     if err := migration.Up(); err != nil {
-        return fmt.Errorf("Could not run up migrations: %w", err)
+        if !errors.Is(err, migrate.ErrNoChange){
+            return fmt.Errorf("Could not run up migrations: %w", err)
+        }
     }
 
     fmt.Println("Succesfully migrated db")
