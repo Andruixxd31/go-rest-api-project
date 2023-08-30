@@ -107,4 +107,5 @@ func (db *DB) DeleteComment(ctx context.Context, id string) error  {
 	if err != nil {
 		return fmt.Errorf("failed to delete comment from the database: %w", err)
 	}
-	return nil}
+	return nil
+}
